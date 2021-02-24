@@ -28,7 +28,7 @@
         </form>
         <hr>
         <h2>Deposit or withdraw funds:</h2>
-        <form id="new-account">
+        <form id="transactions">
           <div class="form-group">
             <label for="new-deposit-amount">Deposit Amount</label>
             <input type="text"  class="form-control" id="new-deposit-amount">
@@ -40,14 +40,15 @@
           <button type="submit" class="btn-primary">Add</button>
         </form>
         <hr>
-        <ul id="account">
-        </ul>
+        <!-- <ul id="account">
+        </ul> -->
       </div>
       <div class="col-md-6">
-        <div id="show-account">
-          <p>Name: <span class="first-last-name"></span></p>
-          <p>Initial Deposit: <span class="initial-deposit"></span></p>
-          <div id="buttons">
+        <div>
+          <h2>Current Balance</h2>
+          <div id="show-account">
+            <p id="first-last-name"></p>
+            <p id="current-balance"></p>
           </div>
         </div>
       </div>

@@ -1,100 +1,64 @@
-// Business Logic for BankAccount ---------
-function BankAccount() {
-  this.accounts = {};
-  this.currentId = 0;
-}
-
-BankAccount.prototype.addAccount = function(account) {
-  account.id = this.assignId();
-  this.accounts[account.id] = account;
-}
-
-BankAccount.prototype.assignId = function() {
-  this.currentId += 1;
-  return this.currentId;
-}
-
-BankAccount.prototype.findAccount = function(id) {
-  if (this.accounts[id] != undefined) {
-    return this.accounts[id];
-  }
-  return false;
-}
-
-BankAccount.prototype.deleteContact = function(id) {
-  if (this.accounts[id] === undefined) {
-    return false;
-  }
-  delete this.accounts[id];
-  return true;
-}
-
 // Business Logic for Accounts ---------
-function Account(firstLastName, initialDeposit) {
-  this.firstLastName = firstLastName;
-  this.initialDeposit = initialDeposit;
-  
+function Account() {
+  this.firstLastName = '';
+  this.initialDeposit = 0;
 }
 
-Account.prototype.fullName = function() {
-  return this.firstLastName + " " + this.initialDeposit;
+Account.prototype.addName = function(name) {
+  return this.firstLastName = name;
 }
 
-function Account(depositAmount, withdrawalAmount) {
-  this.depositAmount = depositAmount;
-  this.withdrawalAmount = withdrawalAmount;
-  
+Account.prototype.deposit = function(depositAmount) {
+  return this.initialDeposit += depositAmount;
 }
 
-Account.prototype.remainBalance = function() {
-  return this.depositAmount + " " + this.withdrawalAmount;
+Account.prototype.withdraw = function(withdrawalAmount) {
+  return this.initialDeposit -= withdrawalAmount;
 }
-
 
 // User Interface Logic ---------
-let bankAccount = new BankAccount();
-
-function displayAccountDetails(bankAccountToDisplay) {
-  let accountsList = $("ul#accounts");
+function displayAccountBalance(accountInfo) {
+  let account = $("#show-account");
   let htmlForAccountInfo = "";
-  Object.keys(bankAccountToDisplay.accounts).forEach(function(key) {
-    const account = bankAccountToDisplay.findAccount(key);
-    htmlForAccountInfo += "<li id=" + account.id + ">" + contact.firstLastName + " " + contact.initialDeposit + "</li>";
-  });
-  accountsList.html(htmlForAccountInfo);
-};
 
-function showAccount(accountId) {
-  const account = bankAccount.findAccount(accountId);
-  $("#show-account").show();
-  $(".first-last-name").html(contact.firstLastName);
-  $(".initial-deposite").html(account.initialDeposit);
-  let buttons = $("#buttons");
-  buttons.empty();
-  buttons.append("<button class='deleteButton' id=" +  + account.id + ">Delete</button>");
-}
-
-function attachAccountListeners() {
-  $("ul#accounts").on("click", "li", function() {
-    showAccount(this.id);
-  });
-  $("#buttons").on("click", ".deleteButton", function() {
-    bankAccount.deleteAccount(this.id);
-    $("#show-account").hide();
-    displayAccountDetails(bankAccount);
-  });
+  htmlForAccountInfo += "<p>" + accountInfo.firstLastName + "</p>" + "<p>" + "$" + accountInfo.initialDeposit + "<p>";
+  account.html(htmlForAccountInfo);
 };
 
 $(document).ready(function() {
-  attachAccountListeners();
+  let account = new Account();
+
   $("form#new-account").submit(function(event) {
     event.preventDefault();
+
     var inputtedFirstLastName = $("input#new-first-last-name").val();
-    var inputtedInitialDeposit = $("input#new-initial-deposit").val();
+    var inputtedInitialDeposit = Number($("input#new-initial-deposit").val());
+    
+    account.addName(inputtedFirstLastName);
+    account.deposit(inputtedInitialDeposit)
+
     $("input#new-first-last-name").val("");
     $("input#new-initial-deposit").val("");
-    var newAccount = new Account(inputtedFirstLastName, inputtedInitialDeposit);
-    bankAccount.addAccount(newAccount);
-    displayAccountDetails(bankAccount);
+  
+    displayAccountBalance(account);
+  });
+
+  $("form#transactions").submit(function(event) {
+    event.preventDefault();
+   
+    var inputtedDeposit = Number($("input#new-deposit-amount").val());
+    var inputtedWithdrawal = Number($("input#new-withdrawal-amount").val());
+    
+    $("input#new-deposit-amount").val("");
+    $("input#new-withdrawal-amount").val("");
+
+    if(inputtedDeposit) {
+      account.deposit(inputtedDeposit);
+    } 
+    else if (inputtedWithdrawal) {
+      account.withdraw(inputtedWithdrawal);
+    }    
+
+    displayAccountBalance(account);
   });
 });
